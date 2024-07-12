@@ -1,0 +1,72 @@
+<div class="flex grow flex-col rounded-lg lg:px-5 lg:py-5  lg:basis-60 xl:px-8">
+  <h2 class=" whitespace-nowrap font-inter mb-1 mt-2 lg:mt-5 text-lg font-medium text-black"> {{treeItem.title}} </h2>
+  <ul>
+    @for (link of treeItem.links; track $index) {
+      @if (!link.children) {
+        <li class=" hover:bg-secondary-100">
+          <a class="font-inter max-w-64 text-sm text-gray-500 lg:max-w-sm" href="{{link.url}}">{{link.label}}</a>
+        </li>
+      } @else {
+        <ng-container
+          *ngTemplateOutlet="childrenLinks;
+          context: {
+            $implicit: link.children
+            }
+         "
+        >
+        </ng-container>
+      }
+    }
+  </ul>
+</div>
+
+
+<ng-template #childrenLinks let-items>
+  @for (item of items; track $index) {
+    <li  class=" hover:bg-secondary-100 whitespace-nowrap">
+      <div
+        (click)="toggleItem(item)"
+        class="font-inter max-w-64 text-sm text-gray-500 lg:max-w-sm flex items-center hover:bg-secondary-100 focus:text-primary active:text-primary">
+        {{item.title}}
+        <svg
+          [class.rotate-90]="selectedItem === item"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2.5"
+          stroke="currentColor"
+          class="h-4 w-4">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg
+        >
+      </div>
+
+      @if (selectedItem === item) {
+        <ul
+          class=""
+          id="collapseThirdThree"
+          data-twe-collapse-item>
+          @for (link of item.links; track $index) {
+            @if (!link.children) {
+              <li class=" hover:bg-secondary-100">
+                <a class="font-inter max-w-64 text-sm text-gray-500 lg:max-w-sm" href="{{link.url}}">{{link.label}}</a>
+              </li>
+            } @else {
+              <ng-container
+                *ngTemplateOutlet="childrenLinks;
+          context: {
+            $implicit: link.children
+            }
+         "
+              >
+              </ng-container>
+            }
+          }
+        </ul>
+      }
+    </li>
+  }
+</ng-template>
+

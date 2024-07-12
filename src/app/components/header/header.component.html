@@ -1,0 +1,119 @@
+<header class="bg-purple-600 text-white" [ngClass]="{'bg-white': selectedMenu,}">
+  <section>
+    <nav class="font-inter mx-auto h-auto w-full max-w-screen-2xl lg:relative lg:top-0"
+         [ngClass]="{'text-black': selectedMenu}">
+      <div class="flex flex-col px-6 py-6 lg:gap-16 lg:flex-row lg:items-center  lg:px-10 lg:py-4 xl:px-20">
+        <a href="#">
+          <div class="text-3xl mx-auto font-bold">
+            точка
+          </div>
+        </a>
+        @if (selectedMenu) {
+          <div class="mt-14   lg:grow flex flex-col space-y-8 lg:mt-0 lg:flex lg:flex-row  lg:space-y-0">
+            @for (section of menuItems; track $index) {
+              <ng-container *ngTemplateOutlet="sectionTemplate; context: {
+          $implicit: section
+          }">
+              </ng-container>
+            }
+          </div>
+        } @else {
+          <div class="mt-14 hidden  lg:grow flex-col space-y-8 lg:mt-0 lg:flex lg:flex-row  lg:space-y-0">
+            @for (section of menuItems; track $index) {
+              <ng-container *ngTemplateOutlet="sectionTemplate; context: {
+          $implicit: section
+          }">
+              </ng-container>
+            }
+          </div>
+        }
+        <div class="flex gap-4 items-center right-4 absolute lg:relative">
+          <div class="lg:self-end flex flex-col space-y-8 lg:flex lg:flex-row lg:space-x-3 lg:space-y-0 ">
+            <a [ngClass]="{'border-black': selectedMenu}" class="font-inter rounded-lg border-2 border-white  px-8 py-2 hover:bg-gray-800"
+               href="#">
+              Войти
+            </a>
+          </div>
+          <a href="#" [ngClass]="{'border-black': selectedMenu}" class=" right-5 lg:hidden border-2 border-white rounded px-4 py-2"
+             (click)="toggleMenu()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3.75 12H20.25" stroke="#160042" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+              </path>
+              <path d="M3.75 6H20.25" stroke="#160042" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+              </path>
+              <path d="M3.75 18H20.25" stroke="#160042" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+              </path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </section>
+</header>
+<main class="bg-amber-100 h-[500px]">
+</main>
+
+
+<ng-template #sectionTemplate let-section>
+  <div class="relative flex flex-col">
+    <a href="#" (click)="toggleItem(section)" class="flex flex-row rounded-lg lg:px-2 lg:py-4 lg: lg:hover:text-gray-200  ">
+      {{section.label}}
+      <svg [class.rotate-180]="selectedItem !== section" class="fill-current transition rotate-180 w-6 h-6"
+           viewBox="0 0 24 24">
+        <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z">
+        </path>
+      </svg>
+    </a>
+    @if (selectedItem === section) {
+      <div class=" z-50 flex w-full  flex-col rounded-lg px-5 lg:absolute lg:top-20 lg:w-auto bg-white lg:flex-row lg:flex-wrap lg:py-7 xl:w-auto">
+        <div class="lg:h-[400px] w-auto lg:w-[550px] xl:w-[650px] grid grid-cols-1 lg:grid-cols-2 overflow-y-scroll ">
+          @for (item of section.sections; track $index) {
+            <div class="hidden md:flex grow flex-col rounded-lg lg:px-5 lg:py-5  lg:basis-60 xl:px-8">
+              <h2 class=" whitespace-nowrap font-inter mb-1 mt-2 lg:mt-5 text-lg font-medium text-black">
+                {{item.title}}
+              </h2>
+              <ul class="" id="collapseThirdThree" data-twe-collapse-item>
+                @for (link of item.links; track $index) {
+                  <li class=" hover:bg-secondary-100">
+                    <a class="font-inter max-w-64 text-sm text-gray-500 lg:max-w-sm" href="{{link.url}}">
+                      {{link.label}}
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+            <div class="hs-accordion-group block md:hidden">
+              <div class="hs-accordion" [class.active]="isActive(item.id)" id="hs-basic-with-arrow-heading-one">
+                <button class="hs-accordion-toggle py-1 inline-flex items-center gap-x-3 w-full font-semibold text-start text-gray-800 hover:text-gray-500 rounded-lg"
+                        (click)="toggleAccordion(item.id)" aria-controls="hs-basic-with-arrow-collapse-one">
+                  {{item.title}}
+                  <svg class="size-4" [class.rotate-180]="isActive(item.id) !== true" xmlns="http://www.w3.org/2000/svg"
+                       width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m6 9 6 6 6-6">
+                    </path>
+                  </svg>
+                </button>
+                <div [id]="item.id" class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
+                     aria-labelledby="hs-basic-with-arrow-heading-one">
+                  <ul>
+                    @for (link of item.links; track $index) {
+                      <li class=" hover:bg-secondary-100">
+                        <a class="font-inter max-w-64 text-sm text-gray-500 lg:max-w-sm" href="{{link.url}}">
+                          {{link.label}}
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</ng-template>
